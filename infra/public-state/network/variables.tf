@@ -27,3 +27,9 @@ variable "subnet_cidr" {
   description = "The CIDR block for the subnets"
   default     = []
 }
+
+variable "eks_cluster_name" {
+  type        = string
+  description = "EKS cluster name for kubernetes.io/cluster subnet tags"
+  default     = ""
+}
