@@ -3,8 +3,8 @@ name : MyTest CI/CD Pipeline
 on :
   push :
     branches : [main]
-    paths :
-      - 'infra/public-state/**'
+    # paths :
+    #   - 'infra/public-state/**'
 permissions :
   contents : read
 jobs :
