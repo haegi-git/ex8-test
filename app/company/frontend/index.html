@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>std11 · studio</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #171e26;
+      --line: #2a3542;
+      --text: #eef3f7;
+      --muted: #8b9aab;
+      --accent: #7dd3c0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Segoe UI", Pretendard, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 10% -10%, #1c3d38 0%, transparent 55%),
+        radial-gradient(700px 400px at 100% 0%, #243044 0%, transparent 50%),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 72px 24px;
+    }
+
+    .mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      letter-spacing: 0.16em;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(125, 211, 192, 0.7);
+      animation: pulse 2.2s ease-out infinite;
+    }
+
+    h1 {
+      margin-top: 28px;
+      font-size: clamp(36px, 7vw, 64px);
+      font-weight: 620;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    p.lead {
+      margin-top: 18px;
+      max-width: 34em;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 48px;
+    }
+
+    .card {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--panel) 88%, transparent);
+      backdrop-filter: blur(8px);
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    footer {
+      margin-top: 64px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    @keyframes pulse {
+      70% { box-shadow: 0 0 0 10px rgba(125, 211, 192, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(125, 211, 192, 0); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="mark"><span class="dot"></span> std11 · online</div>
+    <h1>작게 만들고<br />깨끗하게 배포한다.</h1>
+    <p class="lead">
+      EKS와 Argo CD로 올린 페이지입니다.  infra는 Terraform, 앱은 GitOps.
+    </p>
+    <section class="grid">
+      <article class="card">
+        <strong>Build</strong>
+        <span>GitHub Actions가 이미지를 만듭니다.</span>
+      </article>
+      <article class="card">
+        <strong>Sync</strong>
+        <span>Argo가 YAML을 클러스터에 맞춥니다.</span>
+      </article>
+      <article class="card">
+        <strong>Serve</strong>
+        <span>Nginx가 이 화면을 그대로 보여줍니다.</span>
+      </article>
+    </section>
+    <footer>ex8-tot · company frontend</footer>
+  </main>
+</body>
+</html>

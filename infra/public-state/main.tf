@@ -1,8 +1,8 @@
 module "network" {
-  source     = "./network"
-  vpc_cidr   = "10.0.0.0/16"
-  vpc_name   = "std11-ex8-vpc"
-  azs        = local.azs
+  source           = "./network"
+  vpc_cidr         = "10.0.0.0/16"
+  vpc_name         = "std11-ex8-vpc"
+  azs              = local.azs
   tag_header       = "std11-"
   eks_cluster_name = "std11-eks-cluster"
   subnet_cidr = [{

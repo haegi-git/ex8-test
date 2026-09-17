@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-web-label
+  template:
+    metadata:
+      labels:
+        app: nginx-web-label
+    spec:
+      containers:
+        - name: nginx-container
+          image: haegihaegi/nginx:4ad4d0a06b919edf43e059006bdaa60d9829d702
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx-web-label
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+---
+# 회사 프론트. 같은 ALB 그룹(std11-shared-alb)에 / 경로로 붙음
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/group.name: std11-shared-alb
+    alb.ingress.kubernetes.io/group.order: "10"
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-svc
+                port:
+                  number: 80

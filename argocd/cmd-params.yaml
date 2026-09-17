@@ -1,0 +1,15 @@
+# Argo UI를 HTTP ALB 뒤 /argocd 경로로 열기 위한 설정
+# kubectl apply -f argocd/cmd-params.yaml
+# 적용 후: kubectl -n argocd rollout restart deployment argocd-server
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  server.insecure: "true"
+  server.basehref: "/argocd"
+  server.rootpath: "/argocd"
