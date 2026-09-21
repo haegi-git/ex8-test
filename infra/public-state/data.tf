@@ -20,7 +20,18 @@ data "aws_security_group" "external_alb_sg" {
   }
 }
 
+data "aws_security_group" "internal_ssh_sg" {
+  filter {
+    name = "tag:Name"
+    values = [
+      "${local.tag_header}internal-ssh-sg"
+    ]
+  }
+}
+
 output "info" {
   value = [
-  data.aws_security_groups.security_groups.ids, ]
+    data.aws_security_group.external_alb_sg.id,
+    data.aws_security_group.internal_ssh_sg.id,
+  ]
 }
