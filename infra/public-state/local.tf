@@ -4,6 +4,12 @@ locals {
     (var.owner != "") ? "${var.owner}-" : ""
   )
   ami_id = data.aws_ami.al2023.id
+
+  ec2_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  ]
 }
 
 

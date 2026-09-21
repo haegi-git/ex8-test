@@ -33,3 +33,9 @@ variable "default_version" {
   description = "The default version for the launch template"
   default     = ""
 }
+
+variable "ec2_policy_arns" {
+  type        = list(string)
+  description = "The policy ARNs for the launch template"
+  default     = []
+}

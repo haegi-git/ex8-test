@@ -19,6 +19,7 @@ module "cicd" {
   key_name        = var.key_name
   security_groups = module.network.security_group_ids
   default_version = var.default_version
+  ec2_policy_arns = local.ec2_policy_arns
 }
 
 # module "eks" {
