@@ -58,3 +58,88 @@ resource "aws_autoscaling_group" "asg" {
     version = "$Latest"
   }
 }
+
+
+# #############################################################################
+# CodeDeploy Application & Deployment Group
+# #############################################################################
+
+resource "aws_codedeploy_app" "app" {
+  # 배포 대상 정의: Server / Lambda / ECS
+  # codedeploy란? AWS CodeDeploy는 소프트웨어 배포를 자동화하는 서비스로, 애플리케이션 배포를 쉽고 안전하게 관리할 수 있도록 도와줍니다.
+  name             = "${var.tag_header}asg-codedeploy-app"
+  compute_platform = "Server"
+}
+resource "aws_codedeploy_deployment_group" "deployment_group" {
+  deployment_group_name = "${var.tag_header}asg-codedeploy-deployment-group" # 배포 그룹 이름
+  app_name              = aws_codedeploy_app.app.name                        # CodeDeploy 애플리케이션 연결
+  service_role_arn      = aws_iam_role.codedeploy_role.arn                   # CodeDeploy 역할 연결
+  autoscaling_groups    = [aws_autoscaling_group.asg.name]                   # 배포 대상 정의
+
+  deployment_config_name = "CodeDeployDefault.AllAtOnce" # 배포 구성 이름
+  # 배포 전략 지정
+  # "CodeDeployDefault.AllAtOnce": 타겟 인스턴스 전체에 동시에 한 번에 배포하는 방식
+  # "OneAtATime": 타겟 인스턴스 하나씩 순차적으로 배포하는 방식
+  # "HalfAtATime": 대상 인스턴스의 50%를 먼저 배포 후 나머지 배포
+}
+
+# #############################################################################
+# 연결 리소스 생성 및 CodePipeline 리소스 생성
+# #############################################################################
+# AWS - GitHub 간 CodeStart Connection 생성
+
+resource "aws_codestarconnections_connection" "github_connection" {
+  name          = "${var.tag_header}github-connection"
+  provider_type = "GitHub"
+}
+
+# #############################################################################
+# AWS CodePipeline 생성
+# #############################################################################
+resource "aws_codepipeline" "codepipeline" {
+  name     = "${var.tag_header}asg-codepipeline"
+  role_arn = aws_iam_role.codepipeline_role.arn
+
+  artifact_store {
+    location = aws_s3_bucket.pipeline_bucket.id
+
+    type = "S3"
+  }
+  # source stage
+  stage {
+    name = "Source"
+    action {
+      name             = "Source"
+      category         = "Source"
+      owner            = "AWS"                      # 액션 제공자(aws에서 제공하는 서비스 활용)
+      provider         = "CodeStarSourceConnection" # github v2액션과 연동 표준인 codestarconnections 사용
+      version          = "1"
+      output_artifacts = ["source_output"] # ZIP 소스 압축파일을 다음 스테이지로 전달할 전달용 아티펙트 이름 선언
+      # Github 연동을 위한 속성값 정의
+      configuration = {
+        # github와 codeDeploy를 연결하는 연결 객체 정의
+        ConnectionArn = aws_codestarconnections_connection.github_connection.arn
+        # 깃허브 레포 이름
+        FullRepositoryId = "haegi-git/ex8-test"
+        BranchName       = "main"
+      }
+    }
+  }
+  # Deploy stage
+  stage {
+    name = "Deploy"
+    action {
+      name            = "Deploy"
+      category        = "Deploy"
+      owner           = "AWS"        # 액션 제공자(aws에서 제공하는 서비스 활용)
+      provider        = "CodeDeploy" # 배포에 사용할 aws 서비스 지정 (CodeDeploy)
+      version         = "1"
+      input_artifacts = ["source_output"] # 이전 스테이지에서 생성된 아티펙트 이름 선언
+      # CodeDeploy 배포 설정을 위한 속성값 정의
+      configuration = {
+        ApplicationName     = aws_codedeploy_app.app.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.deployment_group.deployment_group_name
+      }
+    }
+  }
+}
