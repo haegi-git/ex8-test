@@ -7,7 +7,7 @@ variable "owner" {
 variable "key_name" {
   type        = string
   description = "The key name for the EKS"
-  default     = "std11-ex8-key"
+  default     = "std11-central-key"
 }
 variable "vpc_name" {
   type        = string
