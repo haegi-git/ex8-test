@@ -18,11 +18,11 @@ module "network" {
 
 }
 
-module "eks" {
-  source             = "./eks"
-  tag_header         = "std11-"
-  vpc_id             = module.network.vpc_id
-  node_policies      = local.node_policies
-  private_subnet_ids = module.network.private_subnet_ids
-}
+# module "eks" {
+#   source             = "./eks"
+#   tag_header         = "std11-"
+#   vpc_id             = module.network.vpc_id
+#   node_policies      = local.node_policies
+#   private_subnet_ids = module.network.private_subnet_ids
+# }
 
