@@ -21,3 +21,9 @@ variable "private_subnet_ids" {
   description = "The private subnet IDs for the EKS"
   default     = []
 }
+
+variable "key_name" {
+  type        = string
+  description = "The key name for the EKS"
+  default     = ""
+}

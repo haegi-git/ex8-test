@@ -1,5 +1,9 @@
 locals {
   azs = slice(data.aws_availability_zones.available_az.names, 0, 3)
+  tag_header = (var.owner != "" && var.environment != "") ? "${var.owner}-${var.environment}-" : (
+    (var.owner != "") ? "${var.owner}-" : ""
+  )
+  ami_id = data.aws_ami.al2023.id
 }
 
 

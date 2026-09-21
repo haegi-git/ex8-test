@@ -33,3 +33,9 @@ variable "eks_cluster_name" {
   description = "EKS cluster name for kubernetes.io/cluster subnet tags"
   default     = ""
 }
+
+variable "owner" {
+  type        = string
+  description = "The owner of the VPC"
+  default     = ""
+}
