@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nginx-container
-          image: haegihaegi/nginx:9d8218f1547d0090c1b47f9ea3c72c5f0b7f8c53
+          image: haegihaegi/nginx:3ad82d3eeffafa28a2b5cf3073c1b4ce86faf669
           ports:
             - containerPort: 80
 ---
