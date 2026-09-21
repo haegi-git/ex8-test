@@ -23,3 +23,13 @@ variable "key_name" {
   description = "The key name for the launch template"
   default     = ""
 }
+variable "security_groups" {
+  type        = list(string)
+  description = "The security groups for the launch template"
+  default     = []
+}
+variable "default_version" {
+  type        = string
+  description = "The default version for the launch template"
+  default     = ""
+}

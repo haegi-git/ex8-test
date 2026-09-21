@@ -54,3 +54,8 @@ variable "environment" {
   description = "The environment of the VPC"
   default     = "dev"
 }
+variable "default_version" {
+  type        = string
+  description = "The default version for the launch template"
+  default     = "latest"
+}
