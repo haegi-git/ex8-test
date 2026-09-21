@@ -3,7 +3,7 @@ resource "aws_launch_template" "asg_lt" {
   name_prefix            = "${var.tag_header}-"
   image_id               = var.ami_id
   instance_type          = "t3.small"
-  key_name               = aws_key_pair.asg.key_name
+  key_name               = var.key_name
   vpc_security_group_ids = var.security_groups
 
   # 기본 버전 지정 방법
