@@ -5,11 +5,11 @@ locals {
   )
   ami_id = data.aws_ami.al2023.id
 
-  ec2_policy_arns = [
+  ec2_policy_arns = toset([
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  ]
+  ])
 }
 
 
