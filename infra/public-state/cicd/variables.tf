@@ -37,5 +37,5 @@ variable "default_version" {
 variable "ec2_policy_arns" {
   type        = set(string)
   description = "The policy ARNs for the launch template"
-  default     = toset([])
+  default     = []
 }
