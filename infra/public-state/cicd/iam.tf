@@ -30,26 +30,79 @@ resource "aws_iam_instance_profile" "node_profile_asg" {
   name = "${var.tag_header}ASGNodeInstance-profile"
   role = aws_iam_role.node_role_asg.name
 }
-
-
 # ================================================================================
+
+# #############################################################################
+# CodePipeline 역할(Role)
+# #############################################################################
+resource "aws_iam_role" "codepipeline_role" {
+  name = "${var.tag_header}AmazonCodePipelineService-Role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "codepipeline.amazonaws.com" }
+      Action    = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "codepipeline_policy" {
+  name = "${var.tag_header}CodePipelineServicePolicy"
+  role = aws_iam_role.codepipeline_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectAcl",
+          "s3:GetObjectVersion",
+          "s3:GetBucketVersioning",
+          "s3:PutObject",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "codebuild:BatchGetBuilds",
+          "codebuild:StartBuild",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "codedeploy:CreateDeployment",
+          "codedeploy:GetApplication",
+          "codedeploy:GetApplicationRevision",
+          "codedeploy:GetDeployment",
+          "codedeploy:GetDeploymentConfig",
+          "codedeploy:RegisterApplicationRevision",
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# #############################################################################
 # CodeDeploy 역할(Role)
-# --------------------------------------------------------------------------------
-# 역할 생성
+# #############################################################################
 resource "aws_iam_role" "codedeploy_role" {
   name = "${var.tag_header}AmazonCodeDeployService-Role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
       Effect    = "Allow"
       Principal = { Service = "codedeploy.amazonaws.com" }
-      Action    = "sts:AssumeRole" # IAM Role을 임시로 획득하여 권한을 행사할 수 있도록 허용
+      Action    = "sts:AssumeRole"
     }]
   })
 }
 
-# 관리형 정책을 역할에 연결
 resource "aws_iam_role_policy_attachment" "codedeploy_policy" {
   role       = aws_iam_role.codedeploy_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"

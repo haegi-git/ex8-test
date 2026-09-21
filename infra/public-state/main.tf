@@ -11,15 +11,16 @@ module "network" {
 }
 
 module "cicd" {
-  source          = "./cicd"
-  tag_header      = local.tag_header
-  owner           = var.owner
-  environment     = var.environment
-  ami_id          = local.ami_id
-  key_name        = var.key_name
-  security_groups = module.network.security_group_ids
-  default_version = var.default_version
-  ec2_policy_arns = local.ec2_policy_arns
+  source             = "./cicd"
+  tag_header         = local.tag_header
+  owner              = var.owner
+  environment        = var.environment
+  ami_id             = local.ami_id
+  key_name           = var.key_name
+  security_groups    = module.network.security_group_ids
+  default_version    = var.default_version
+  ec2_policy_arns    = local.ec2_policy_arns
+  private_subnet_ids = module.network.private_subnet_ids
 }
 
 # module "eks" {

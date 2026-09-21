@@ -41,3 +41,19 @@ resource "aws_launch_template" "asg_lt" {
     }
   }
 }
+
+
+# Auto Scaling Group
+
+resource "aws_autoscaling_group" "asg" {
+  name                = "${var.tag_header}codedeploy-asg"
+  min_size            = 1
+  max_size            = 3
+  desired_capacity    = 2
+  vpc_zone_identifier = var.private_subnet_ids
+
+  launch_template {
+    id      = aws_launch_template.asg_lt.id
+    version = "$Latest"
+  }
+}

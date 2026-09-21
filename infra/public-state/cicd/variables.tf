@@ -39,3 +39,8 @@ variable "ec2_policy_arns" {
   description = "The policy ARNs for the launch template"
   default     = []
 }
+variable "private_subnet_ids" {
+  type        = list(string)
+  description = "The private subnet IDs for the Auto Scaling Group"
+  default     = []
+}
