@@ -10,9 +10,10 @@ resource "aws_launch_template" "asg_lt" {
   update_default_version = var.default_version == "latest" ? true : false
   default_version        = var.default_version != "latest" ? tostring(var.default_version) : null
   # ------------------------------------------------------------
-  # iam_instance_profile {
-  #   # name = 역할 이름
-  # }
+  iam_instance_profile {
+    # name = 역할 이름
+    name = aws_iam_instance_profile.node_profile_asg.name
+  }
   # CodeDeploy 설치 스크립트
   user_data = base64encode(<<-EOF
               #!/bin/bash
