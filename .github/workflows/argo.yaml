@@ -19,8 +19,8 @@ jobs:
       - name: Docker 이미지 빌드 및 푸시
         uses: docker/build-push-action@v5
         with:
-          context: ./app
-          file: ./app/Dockerfile
+          context: ./nginx
+          file: ./nginx/Dockerfile
           push: true
           tags: haegihaegi/nginx:${{ github.sha }}
       - name: 쿠버네티스 파일의 이미지 태그 갱신 및 git 푸시
