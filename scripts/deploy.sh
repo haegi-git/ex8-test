@@ -18,7 +18,12 @@ docker pull $ECR_URI
 docker stop $CONTAINER_NAME 2>/dev/null || true
 docker rm $CONTAINER_NAME 2>/dev/null || true
 
-docker run -d --name $CONTAINER_NAME -p 80:80 --restart always $ECR_URI
+# 도커컴포즈
+cd /home/ec2-user/app
+docker compose down || true
+docker compose up -d
+
+# docker run -d --name $CONTAINER_NAME -p 80:80 --restart always $ECR_URI
 
 # 사용하지 않는 이미지 정리(디스크 용량 확보 차원)
-docker image prune -f
+# docker image prune -f
