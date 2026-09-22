@@ -1,0 +1,56 @@
+name : Build And Deploy to AWS ASG via CodePipeline
+
+on:
+  push:
+    branches:
+      - main
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+  CODE_DEPLOY_APP_NAME: ${{ secrets.CODE_DEPLOY_APP_NAME }}
+  CODE_DEPLOY_GROUP_NAME: ${{ secrets.CODE_DEPLOY_GROUP_NAME }}
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+        # 1. AWS 자격 증명 설정 (ECR 로그인 전에 수정해야 함)
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+        
+        # 2. ECR 로그인
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+
+        # 3. Docker 빌드
+      - name: Build and push Docker image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # docker build의 마지막 마침표( . ) 는 context 경로를 의미함.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+                        -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
+                        -f ./nginx/Dockerfile ./nginx
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+        # 4. Docker 이미지 푸시
+
+        # 5. CodeDeploy 배포 번들 생성
+
+        # 6. 배포 번들 S3 업로드
+
+        # 7. CodeDeploy 배포 생성
