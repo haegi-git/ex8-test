@@ -42,3 +42,12 @@ crash.log
 .terraform
 .terraform.lock.hcl
 .terraform.tfstate
+# === 6. Terraform 바이너리 및 캐시 제외 ==
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

@@ -47,10 +47,17 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-        # 4. Docker 이미지 푸시
+        # 4. (중요) zip 압축 단계 전에 chmod +x 권한 부여
+      - name: Grant execute permissions to scripts
+        run: chmod +x scripts/*.sh
 
-        # 5. CodeDeploy 배포 번들 생성
-
+        # 5. CodeDeploy 배포 번들 생성 (appsepec.yml 파일과 scripts 디렉토리만 zip)
+      - name: Create CodeDeploy Bundle
+        run: |
+          mkdir -p build
+          zip -r build/bundle.zip appsepec.yml scripts/
+        
         # 6. 배포 번들 S3 업로드
-
-        # 7. CodeDeploy 배포 생성
+      - name: Upload bundle to S3
+        run: |
+          aws s3 cp build/bundle.zip s3://${{ env.S3_BUCKET_NAME }}/bundle-${{ github.sha }}.zip
